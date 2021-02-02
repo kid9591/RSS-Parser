@@ -112,6 +112,16 @@ internal object CoreXMLParser {
                         currentArticle.author = xmlPullParser.nextText().trim()
                     }
 
+                } else if (xmlPullParser.name.equals(RSSKeywords.RSS_ITEM_CREATOR, ignoreCase = true)) {
+                    if (insideItem) {
+                        currentArticle.creator = xmlPullParser.nextText().trim()
+                    }
+
+                } else if (xmlPullParser.name.equals(RSSKeywords.RSS_ITEM_LOCATION, ignoreCase = true)) {
+                    if (insideItem) {
+                        currentArticle.location = xmlPullParser.nextText().trim()
+                    }
+
                 } else if (xmlPullParser.name.equals(RSSKeywords.RSS_ITEM_CATEGORY, ignoreCase = true)) {
                     if (insideItem) {
                         currentArticle.addCategory(xmlPullParser.nextText().trim())
@@ -190,6 +200,16 @@ internal object CoreXMLParser {
                         val nextTokenType = xmlPullParser.next()
                         if (nextTokenType == XmlPullParser.TEXT) {
                             currentArticle.pubDate = xmlPullParser.text.trim()
+                        }
+                        // Skip to be able to find date inside 'tag' tag
+                        continue
+                    }
+
+                } else if (xmlPullParser.name.equals(RSSKeywords.RSS_ITEM_CREATE_DATE, ignoreCase = true)) {
+                    if (insideItem) {
+                        val nextTokenType = xmlPullParser.next()
+                        if (nextTokenType == XmlPullParser.TEXT) {
+                            currentArticle.createDate = xmlPullParser.text.trim()
                         }
                         // Skip to be able to find date inside 'tag' tag
                         continue
